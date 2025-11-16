@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML文件上传与预览工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(90deg, #4a00e0, #8e2de2);
+            color: white;
+            padding: 25px 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+        
+        .upload-section {
+            flex: 1;
+            min-width: 300px;
+            padding: 25px;
+            border-right: 1px solid #eaeaea;
+        }
+        
+        .preview-section {
+            flex: 2;
+            min-width: 500px;
+            padding: 25px;
+        }
+        
+        .upload-area {
+            border: 2px dashed #8e2de2;
+            border-radius: 10px;
+            padding: 40px 20px;
+            text-align: center;
+            margin-bottom: 25px;
+            transition: all 0.3s;
+            background-color: #f8f9fa;
+            cursor: pointer;
+        }
+        
+        .upload-area:hover {
+            background-color: #f0f0f0;
+            border-color: #4a00e0;
+        }
+        
+        .upload-icon {
+            font-size: 48px;
+            color: #8e2de2;
+            margin-bottom: 15px;
+        }
+        
+        .upload-text {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .btn {
+            background: linear-gradient(90deg, #4a00e0, #8e2de2);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-block;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(142, 45, 226, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(142, 45, 226, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .preview-container {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+            height: 500px;
+            background-color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .preview-header {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #eaeaea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .preview-title {
+            font-weight: 600;
+            color: #4a00e0;
+        }
+        
+        .preview-frame {
+            width: 100%;
+            height: calc(100% - 55px);
+            border: none;
+        }
+        
+        .file-info {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid #4a00e0;
+        }
+        
+        .file-info h3 {
+            margin-bottom: 10px;
+            color: #4a00e0;
+        }
+        
+        .file-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .file-detail {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #eaeaea;
+        }
+        
+        .file-name {
+            font-weight: 600;
+        }
+        
+        .instructions {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f0f7ff;
+            border-radius: 10px;
+            border-left: 4px solid #2575fc;
+        }
+        
+        .instructions h3 {
+            color: #2575fc;
+            margin-bottom: 15px;
+        }
+        
+        .instructions ol {
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        
+        @media (max-width: 900px) {
+            .upload-section, .preview-section {
+                border-right: none;
+                border-bottom: 1px solid #eaeaea;
+                min-width: 100%;
+            }
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            background-color: #ffeaea;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>HTML文件上传与预览工具</h1>
+            <p class="subtitle">上传HTML文件，直接在浏览器中预览效果</p>
+        </header>
+        
+        <div class="main-content">
+            <div class="upload-section">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📁</div>
+                    <p class="upload-text">拖放HTML文件到此处或点击上传</p>
+                    <button class="btn" id="uploadBtn">选择文件</button>
+                    <input type="file" id="fileInput" class="file-input" accept=".html,.htm">
+                </div>
+                
+                <div class="file-info" id="fileInfo" style="display: none;">
+                    <h3>文件信息</h3>
+                    <div class="file-details">
+                        <div class="file-detail">
+                            <span>文件名:</span>
+                            <span class="file-name" id="fileName">-</span>
+                        </div>
+                        <div class="file-detail">
+                            <span>文件大小:</span>
+                            <span id="fileSize">-</span>
+                        </div>
+                        <div class="file-detail">
+                            <span>修改时间:</span>
+                            <span id="fileTime">-</span>
+                        </div>
+                        <div class="file-detail">
+                            <span>文件类型:</span>
+                            <span id="fileType">-</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="error-message" id="errorMessage">
+                    请上传有效的HTML文件（.html或.htm格式）
+                </div>
+                
+                <div class="instructions">
+                    <h3>使用说明</h3>
+                    <ol>
+                        <li>点击"选择文件"按钮或拖放HTML文件到上传区域</li>
+                        <li>系统将自动验证并显示文件信息</li>
+                        <li>文件内容将在右侧预览区域显示</li>
+                        <li>您可以直接在预览区域与HTML内容交互</li>
+                        <li>注意：此工具仅用于预览，不会保存您的文件</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <div class="preview-section">
+                <div class="preview-container">
+                    <div class="preview-header">
+                        <span class="preview-title">预览区域</span>
+                        <span id="previewStatus">等待上传文件</span>
+                    </div>
+                    <iframe class="preview-frame" id="previewFrame" sandbox="allow-scripts allow-same-origin">
+                        您的浏览器不支持iframe预览功能
+                    </iframe>
+                </div>
+                
+                <div class="instructions">
+                    <h3>注意事项</h3>
+                    <ol>
+                        <li>预览功能在安全沙盒中运行，某些功能可能受限</li>
+                        <li>外部资源（如图片、CSS、JS）需要完整URL才能正常加载</li>
+                        <li>如果HTML文件包含外部资源，请确保这些资源可公开访问</li>
+                        <li>敏感信息请勿通过此工具上传</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('fileInput');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const uploadArea = document.getElementById('uploadArea');
+            const previewFrame = document.getElementById('previewFrame');
+            const fileInfo = document.getElementById('fileInfo');
+            const fileName = document.getElementById('fileName');
+            const fileSize = document.getElementById('fileSize');
+            const fileTime = document.getElementById('fileTime');
+            const fileType = document.getElementById('fileType');
+            const previewStatus = document.getElementById('previewStatus');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            // 点击上传按钮触发文件选择
+            uploadBtn.addEventListener('click', function() {
+                fileInput.click();
+            });
+            
+            // 点击上传区域触发文件选择
+            uploadArea.addEventListener('click', function(e) {
+                if (e.target !== uploadBtn) {
+                    fileInput.click();
+                }
+            });
+            
+            // 拖放功能
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                uploadArea.style.backgroundColor = '#f0f0f0';
+                uploadArea.style.borderColor = '#4a00e0';
+            });
+            
+            uploadArea.addEventListener('dragleave', function() {
+                uploadArea.style.backgroundColor = '#f8f9fa';
+                uploadArea.style.borderColor = '#8e2de2';
+            });
+            
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                uploadArea.style.backgroundColor = '#f8f9fa';
+                uploadArea.style.borderColor = '#8e2de2';
+                
+                if (e.dataTransfer.files.length) {
+                    handleFile(e.dataTransfer.files[0]);
+                }
+            });
+            
+            // 文件选择变化
+            fileInput.addEventListener('change', function() {
+                if (fileInput.files.length) {
+                    handleFile(fileInput.files[0]);
+                }
+            });
+            
+            // 处理文件
+            function handleFile(file) {
+                // 验证文件类型
+                const validTypes = ['text/html', 'application/xhtml+xml'];
+                const fileExtension = file.name.split('.').pop().toLowerCase();
+                
+                if (!validTypes.includes(file.type) && !['html', 'htm'].includes(fileExtension)) {
+                    showError();
+                    return;
+                }
+                
+                hideError();
+                displayFileInfo(file);
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewFile(e.target.result);
+                };
+                reader.readAsText(file);
+            }
+            
+            // 预览文件
+            function previewFile(content) {
+                previewFrame.srcdoc = content;
+                previewStatus.textContent = '预览中...';
+                
+                // 监听iframe加载完成
+                previewFrame.onload = function() {
+                    previewStatus.textContent = '预览加载完成';
+                };
+            }
+            
+            // 显示文件信息
+            function displayFileInfo(file) {
+                fileInfo.style.display = 'block';
+                fileName.textContent = file.name;
+                fileSize.textContent = formatFileSize(file.size);
+                fileTime.textContent = new Date(file.lastModified).toLocaleString();
+                fileType.textContent = file.type || 'text/html';
+            }
+            
+            // 格式化文件大小
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+            
+            // 显示错误信息
+            function showError() {
+                errorMessage.style.display = 'block';
+                fileInfo.style.display = 'none';
+                previewStatus.textContent = '文件格式错误';
+                previewFrame.srcdoc = '<html><body style="display:flex;align-items:center;justify-content:center;height:100%;font-family:Arial,sans-serif;color:#666;"><p>请上传有效的HTML文件</p></body></html>';
+            }
+            
+            // 隐藏错误信息
+            function hideError() {
+                errorMessage.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
