@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>冒险旅程 - 章节选择</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+        
+        .chapters-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        
+        .chapter-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: manipulation;
+        }
+        
+        .chapter-card:hover, .chapter-card:active {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .chapter-icon {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .chapter-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .chapter-desc {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            line-height: 1.4;
+        }
+        
+        .chapter-content {
+            display: none;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            text-align: left;
+            width: 100%;
+        }
+        
+        .chapter-content h2 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .chapter-content p {
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            display: inline-block;
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: manipulation;
+        }
+        
+        .btn:hover, .btn:active {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+        
+        .btn-back {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            margin: 30px 0 20px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: white;
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        @media (max-width: 768px) {
+            .chapters-container {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .chapter-card {
+                padding: 20px 15px;
+            }
+        }
+        
+        /* iOS Safari 特定修复 */
+        @supports (-webkit-touch-callout: none) {
+            body {
+                min-height: -webkit-fill-available;
+            }
+            
+            .chapter-card {
+                -webkit-backdrop-filter: blur(10px);
+            }
+            
+            .chapter-content {
+                -webkit-backdrop-filter: blur(10px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>冒险旅程</h1>
+        <p class="subtitle">选择一个章节开始您的冒险</p>
+        
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        
+        <div class="chapters-container" id="chapters-container">
+            <div class="chapter-card" data-chapter="1">
+                <span class="chapter-icon">🌱</span>
+                <h3 class="chapter-title">第一章：起源</h3>
+                <p class="chapter-desc">探索世界的起源，发现隐藏的秘密</p>
+            </div>
+            
+            <div class="chapter-card" data-chapter="2">
+                <span class="chapter-icon">🏔️</span>
+                <h3 class="chapter-title">第二章：挑战</h3>
+                <p class="chapter-desc">面对重重困难，证明你的勇气</p>
+            </div>
+            
+            <div class="chapter-card" data-chapter="3">
+                <span class="chapter-icon">🌟</span>
+                <h3 class="chapter-title">第三章：命运</h3>
+                <p class="chapter-desc">决定世界的命运，创造新的未来</p>
+            </div>
+        </div>
+        
+        <div class="chapter-content" id="chapter-content">
+            <!-- 章节内容将在这里动态加载 -->
+        </div>
+    </div>
+
+    <script>
+        // 确保DOM完全加载后再执行脚本
+        document.addEventListener('DOMContentLoaded', function() {
+            // 章节数据
+            const chapters = {
+                1: {
+                    title: "第一章：起源",
+                    content: `<h2>第一章：起源</h2>
+                    <p>在一片神秘的远古大陆上，文明刚刚开始萌芽。您将扮演一位年轻的探险家，探索未知的世界，发现隐藏的古老秘密。</p>
+                    <p>在这个章节中，您将学习基本的游戏操作，结识重要的角色，并发现一个将改变整个世界的惊人真相。</p>
+                    <p>准备好开始这段奇妙的旅程了吗？点击下方的按钮进入游戏！</p>
+                    <button class="btn" id="start-chapter-1">开始第一章</button>`
+                },
+                2: {
+                    title: "第二章：挑战",
+                    content: `<h2>第二章：挑战</h2>
+                    <p>随着真相的揭露，您的旅程变得更加危险。高山、深渊和未知的敌人等待着您的挑战。</p>
+                    <p>在这个章节中，您将面对更复杂的谜题和更强大的对手。只有智慧和勇气并存的冒险家才能继续前进。</p>
+                    <p>您准备好接受挑战了吗？点击下方的按钮继续您的冒险！</p>
+                    <button class="btn" id="start-chapter-2">开始第二章</button>`
+                },
+                3: {
+                    title: "第三章：命运",
+                    content: `<h2>第三章：命运</h2>
+                    <p>最终决战即将来临。您的选择将决定整个世界的命运，是带来和平还是永恒的黑暗？</p>
+                    <p>在这个最终章节中，您将运用所有学到的技能和知识，面对最终的考验。每一个决定都至关重要。</p>
+                    <p>准备好书写历史的最后一页了吗？点击下方的按钮完成您的使命！</p>
+                    <button class="btn" id="start-chapter-3">开始第三章</button>`
+                }
+            };
+
+            // 为每个章节卡片添加点击事件
+            document.querySelectorAll('.chapter-card').forEach(card => {
+                // 同时添加click和touchstart事件以确保在iOS上正常工作
+                card.addEventListener('click', handleChapterClick);
+                card.addEventListener('touchstart', handleChapterClick, { passive: true });
+            });
+
+            function handleChapterClick(event) {
+                // 阻止默认行为以防意外
+                event.preventDefault();
+                
+                const chapterNum = parseInt(this.getAttribute('data-chapter'));
+                showChapter(chapterNum);
+            }
+
+            // 显示章节内容
+            function showChapter(chapterNum) {
+                // 隐藏章节选择界面
+                document.getElementById('chapters-container').style.display = 'none';
+                
+                // 显示章节内容
+                const contentDiv = document.getElementById('chapter-content');
+                contentDiv.innerHTML = chapters[chapterNum].content + 
+                    `<div class="navigation">
+                        <button class="btn btn-back" id="back-button">返回章节选择</button>
+                    </div>`;
+                contentDiv.style.display = 'block';
+                
+                // 更新进度条
+                document.getElementById('progress').style.width = `${(chapterNum / 3) * 100}%`;
+                
+                // 为返回按钮添加事件
+                document.getElementById('back-button').addEventListener('click', backToChapters);
+                document.getElementById('back-button').addEventListener('touchstart', backToChapters, { passive: true });
+                
+                // 为开始章节按钮添加事件
+                const startButton = document.getElementById(`start-chapter-${chapterNum}`);
+                if (startButton) {
+                    startButton.addEventListener('click', function() { startChapter(chapterNum); });
+                    startButton.addEventListener('touchstart', function() { startChapter(chapterNum); }, { passive: true });
+                }
+            }
+
+            // 返回章节选择
+            function backToChapters() {
+                document.getElementById('chapters-container').style.display = 'grid';
+                document.getElementById('chapter-content').style.display = 'none';
+            }
+
+            // 开始章节（实际游戏中这里会跳转到游戏页面）
+            function startChapter(chapterNum) {
+                alert(`即将开始 ${chapters[chapterNum].title}！\n\n在实际游戏中，这里会跳转到游戏主界面。`);
+                // 在实际应用中，这里会跳转到游戏页面
+                // window.location.href = `game.html?chapter=${chapterNum}`;
+            }
+        });
+    </script>
+</body>
+</html>
