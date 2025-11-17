@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPKC Letter Adventure</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial Rounded MT Bold', 'Arial', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .screen {
+            display: none;
+            min-height: 80vh;
+            padding: 30px;
+            border-radius: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            margin-bottom: 30px;
+            text-align: center;
+            animation: fadeIn 1s ease;
+        }
+        
+        .active {
+            display: block;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
+            color: #FFD700;
+        }
+        
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #87CEEB;
+        }
+        
+        h3 {
+            font-size: 1.8rem;
+            margin: 20px 0;
+            color: #FFD700;
+        }
+        
+        p {
+            font-size: 1.4rem;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(to right, #FF416C, #FF4B2B);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(to right, #FF4B2B, #FF416C);
+        }
+        
+        .video-container {
+            width: 80%;
+            max-width: 800px;
+            height: 400px;
+            margin: 30px auto;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            background: #000;
+            position: relative;
+        }
+        
+        .video-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(45deg, #0f2027, #203a43, #2c5364);
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        .letters {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .letter {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: bold;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.5s ease;
+            position: relative;
+        }
+        
+        .happy {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #8B4513;
+            transform: rotate(5deg);
+        }
+        
+        .cursed {
+            background: linear-gradient(135deg, #4A4A4A, #2C2C2C);
+            color: #8B0000;
+            transform: rotate(-5deg);
+            animation: pulse 2s infinite;
+        }
+        
+        .purified {
+            background: linear-gradient(135deg, #87CEEB, #1E90FF);
+            color: #000080;
+            transform: rotate(0deg);
+            animation: glow 2s infinite alternate;
+        }
+        
+        .letter-progress {
+            position: absolute;
+            bottom: -25px;
+            left: 0;
+            right: 0;
+            font-size: 1rem;
+            color: #FFD700;
+        }
+        
+        .spirits {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+        
+        .spirit {
+            width: 200px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .spirit:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .spirit-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+        
+        .teachers {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+        
+        .teacher {
+            width: 150px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .teacher:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .teacher-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+        
+        .demons {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+        
+        .demon {
+            width: 150px;
+            padding: 20px;
+            background: rgba(139, 0, 0, 0.3);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .demon:hover {
+            transform: scale(1.1);
+            background: rgba(139, 0, 0, 0.5);
+        }
+        
+        .demon-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+        
+        .progress-bar {
+            width: 80%;
+            max-width: 800px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            margin: 30px auto;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(to right, #FF416C, #FF4B2B);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .word-input {
+            padding: 15px;
+            font-size: 1.5rem;
+            border: none;
+            border-radius: 10px;
+            width: 300px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .result {
+            font-size: 1.5rem;
+            min-height: 40px;
+            margin: 20px 0;
+        }
+        
+        .hint-box {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 800px;
+        }
+        
+        .hint-word {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #FFD700;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        .hint-word:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+        
+        .word-counter {
+            font-size: 1.2rem;
+            margin: 15px 0;
+            color: #87CEEB;
+        }
+        
+        /* Animation effects */
+        .animation-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(to bottom, #87CEEB, #1E90FF);
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .grass {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 80px;
+            background: linear-gradient(to top, #2E8B57, #3CB371);
+            z-index: 3;
+        }
+        
+        .school-building {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 400px;
+            height: 200px;
+            background: #FFD700;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            z-index: 5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            padding: 0 20px;
+        }
+        
+        .clock-tower {
+            position: absolute;
+            top: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 80px;
+            background: #DAA520;
+            z-index: 6;
+        }
+        
+        .clock-tower-roof {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 30px;
+            background: #8B4513;
+            clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+            z-index: 7;
+        }
+        
+        .clock {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            border: 3px solid #8B4513;
+            z-index: 8;
+        }
+        
+        .clock-hands {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30px;
+            height: 30px;
+            z-index: 9;
+        }
+        
+        .clock-hour-hand, .clock-minute-hand {
+            position: absolute;
+            background: #333;
+            transform-origin: bottom center;
+        }
+        
+        .clock-hour-hand {
+            width: 3px;
+            height: 10px;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .clock-minute-hand {
+            width: 2px;
+            height: 15px;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .school-windows {
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 25px;
+            z-index: 6;
+        }
+        
+        .window {
+            width: 40px;
+            height: 50px;
+            background: #87CEEB;
+            border: 3px solid #1E90FF;
+        }
+        
+        .school-door {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 100px;
+            background: #8B4513;
+            z-index: 6;
+        }
+        
+        .trees {
+            position: absolute;
+            bottom: 80px;
+            left: 20%;
+            z-index: 4;
+        }
+        
+        .tree {
+            position: relative;
+        }
+        
+        .tree-trunk {
+            width: 20px;
+            height: 60px;
+            background: #8B4513;
+            margin: 0 auto;
+        }
+        
+        .tree-leaves {
+            width: 80px;
+            height: 80px;
+            background: #228B22;
+            border-radius: 50%;
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .swing {
+            position: absolute;
+            bottom: 80px;
+            right: 20%;
+            z-index: 4;
+        }
+        
+        .swing-frame {
+            width: 100px;
+            height: 120px;
+            position: relative;
+        }
+        
+        .swing-pole {
+            width: 10px;
+            height: 120px;
+            background: #8B4513;
+            position: absolute;
+            top: 0;
+        }
+        
+        .swing-pole-left {
+            left: 0;
+        }
+        
+        .swing-pole-right {
+            right: 0;
+        }
+        
+        .swing-bar {
+            width: 100px;
+            height: 10px;
+            background: #8B4513;
+            position: absolute;
+            top: 0;
+        }
+        
+        .swing-seat {
+            width: 60px;
+            height: 20px;
+            background: #8B4513;
+            position: absolute;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 5px;
+            animation: swing 4s infinite ease-in-out;
+            transform-origin: top center;
+        }
+        
+        .swing-ropes {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 60px;
+        }
+        
+        .swing-rope {
+            width: 5px;
+            height: 60px;
+            background: #8B4513;
+            position: absolute;
+            top: 0;
+        }
+        
+        .swing-rope-left {
+            left: 0;
+        }
+        
+        .swing-rope-right {
+            right: 0;
+        }
+        
+        @keyframes swing {
+            0% { transform: translateX(-50%) rotate(-10deg); }
+            50% { transform: translateX(-50%) rotate(10deg); }
+            100% { transform: translateX(-50%) rotate(-10deg); }
+        }
+        
+        .magic-letters-animation {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4rem;
+            font-weight: bold;
+            color: #FFD700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            animation: float-letters 15s linear infinite;
+            z-index: 10;
+        }
+        
+        @keyframes float-letters {
+            0% { 
+                transform: translate(-50%, -50%) scale(0.5);
+                opacity: 0;
+            }
+            20% { 
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+            80% { 
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+            100% { 
+                transform: translate(-50%, -50%) scale(1.5);
+                opacity: 0;
+            }
+        }
+        
+        .happy-people {
+            position: absolute;
+            bottom: 100px;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            z-index: 6;
+        }
+        
+        .person {
+            width: 30px;
+            height: 60px;
+            background: #FF69B4;
+            border-radius: 15px 15px 0 0;
+            animation: bounce 2s infinite alternate;
+        }
+        
+        .person:nth-child(2) {
+            background: #00BFFF;
+            animation-delay: 0.5s;
+        }
+        
+        .person:nth-child(3) {
+            background: #32CD32;
+            animation-delay: 1s;
+        }
+        
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-15px); }
+        }
+        
+        .sun {
+            position: absolute;
+            top: 50px;
+            right: 50px;
+            width: 80px;
+            height: 80px;
+            background: #FFD700;
+            border-radius: 50%;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.8);
+            animation: rotate-sun 20s linear infinite;
+            z-index: 4;
+        }
+        
+        @keyframes rotate-sun {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.8;
+            z-index: 4;
+        }
+        
+        .cloud1 {
+            top: 80px;
+            left: 50px;
+            width: 100px;
+            height: 50px;
+            animation: float-cloud 25s linear infinite;
+        }
+        
+        .cloud2 {
+            top: 120px;
+            left: 200px;
+            width: 120px;
+            height: 60px;
+            animation: float-cloud 30s linear infinite;
+            animation-delay: 5s;
+        }
+        
+        .cloud3 {
+            top: 60px;
+            right: 100px;
+            width: 80px;
+            height: 40px;
+            animation: float-cloud 20s linear infinite;
+            animation-delay: 10s;
+        }
+        
+        @keyframes float-cloud {
+            0% { transform: translateX(-100px); }
+            100% { transform: translateX(1200px); }
+        }
+        
+        .dark-clouds {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 7;
+            opacity: 0;
+            animation: darken 10s forwards;
+        }
+        
+        @keyframes darken {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        
+        /* Fireworks effect styles */
+        .canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .fireworks-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        
+        .firework-button {
+            display: block;
+            margin: 40px auto;
+            padding: 18px 45px;
+            background: linear-gradient(90deg, #ff8a00, #e52e71);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(229, 46, 113, 0.4);
+            pointer-events: auto;
+            z-index: 20;
+            position: relative;
+        }
+        
+        .firework-button:hover, .firework-button:active {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(229, 46, 113, 0.6);
+        }
+        
+        .success-symbol {
+            font-size: 2.5rem;
+            text-align: center;
+            margin: 20px 0;
+            color: #ffd700;
+            z-index: 20;
+            position: relative;
+        }
+        
+        .theme-text {
+            text-align: center;
+            margin-top: 40px;
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            z-index: 20;
+            position: relative;
+        }
+        
+        .instructions {
+            text-align: center;
+            margin-top: 20px;
+            color: #a0a0c0;
+            font-size: 1.1rem;
+            padding: 0 10px;
+            z-index: 20;
+            position: relative;
+        }
+        
+        /* Newly added styles - Floating letters in school */
+        .school-letter {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+            transition: all 0.5s ease;
+            position: relative;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #8B4513;
+            border: 3px solid #00FF00;
+            animation: float-grow 4s infinite ease-in-out;
+        }
+        
+        @keyframes float-grow {
+            0% { 
+                transform: translateY(0) scale(1);
+                border-color: #00FF00;
+            }
+            25% { 
+                transform: translateY(-10px) scale(1.1);
+                border-color: #7CFC00;
+            }
+            50% { 
+                transform: translateY(-5px) scale(1.2);
+                border-color: #32CD32;
+            }
+            75% { 
+                transform: translateY(-15px) scale(1.1);
+                border-color: #00FF7F;
+            }
+            100% { 
+                transform: translateY(0) scale(1);
+                border-color: #00FF00;
+            }
+        }
+        
+        /* Image styles */
+        .image-container {
+            width: 80%;
+            max-width: 600px;
+            margin: 30px auto;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+        
+        .story-image {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1) rotate(-5deg); }
+            50% { transform: scale(1.1) rotate(-5deg); }
+            100% { transform: scale(1) rotate(-5deg); }
+        }
+        
+        @keyframes glow {
+            from { box-shadow: 0 0 10px #87CEEB; }
+            to { box-shadow: 0 0 30px #1E90FF; }
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            h2 { font-size: 2rem; }
+            p { font-size: 1.2rem; }
+            .video-container { height: 250px; }
+            .letter { width: 70px; height: 70px; font-size: 2rem; }
+            .animation-container { height: 300px; }
+            .magic-letters-animation { font-size: 2.5rem; }
+            .school-building { width: 300px; height: 150px; }
+            .trees { left: 10%; }
+            .swing { right: 10%; }
+            .spirits { gap: 15px; }
+            .spirit { width: 160px; padding: 15px; }
+            .school-letter { width: 30px; height: 30px; font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Home Page -->
+        <div id="home" class="screen active">
+            <h1>SPKC Letter Adventure</h1>
+            <div class="video-container">
+                <div class="video-placeholder">
+                    SPKC Story Introduction Video Will Play Here
+                </div>
+            </div>
+            <p>Welcome to the SPKC Letter Adventure! This is a story about magical letters that turned from blessings into curses, and were saved by teachers.</p>
+            <button class="btn" onclick="showScreen('story1')">Start Adventure</button>
+        </div>
+        
+        <!-- First Story -->
+        <div id="story1" class="screen">
+            <h1>The Happy School and Magical Letters</h1>
+            <div class="animation-container">
+                <div class="grass"></div>
+                <div class="sun"></div>
+                <div class="cloud cloud1"></div>
+                <div class="cloud cloud2"></div>
+                <div class="cloud cloud3"></div>
+                
+                <!-- School Building -->
+                <div class="school-building">
+                    <!-- Add floating SPKC letters in the school building -->
+                    <div class="school-letter">S</div>
+                    <div class="school-letter">P</div>
+                    <div class="school-letter">K</div>
+                    <div class="school-letter">C</div>
+                    
+                    <div class="clock-tower">
+                        <div class="clock-tower-roof"></div>
+                        <div class="clock">
+                            <div class="clock-hands">
+                                <div class="clock-hour-hand"></div>
+                                <div class="clock-minute-hand"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="school-windows">
+                        <div class="window"></div>
+                        <div class="window"></div>
+                        <div class="window"></div>
+                        <div class="window"></div>
+                    </div>
+                    <div class="school-door"></div>
+                </div>
+                
+                <!-- Trees -->
+                <div class="trees">
+                    <div class="tree">
+                        <div class="tree-leaves"></div>
+                        <div class="tree-trunk"></div>
+                    </div>
+                </div>
+                
+                <!-- Swing -->
+                <div class="swing">
+                    <div class="swing-frame">
+                        <div class="swing-pole swing-pole-left"></div>
+                        <div class="swing-pole swing-pole-right"></div>
+                        <div class="swing-bar"></div>
+                        <div class="swing-ropes">
+                            <div class="swing-rope swing-rope-left"></div>
+                            <div class="swing-rope swing-rope-right"></div>
+                        </div>
+                        <div class="swing-seat"></div>
+                    </div>
+                </div>
+                
+                <div class="happy-people">
+                    <div class="person"></div>
+                    <div class="person"></div>
+                    <div class="person"></div>
+                    <div class="person"></div>
+                </div>
+                <div class="magic-letters-animation">SPKC</div>
+            </div>
+            
+            <!-- Add image example -->
+            <div class="image-container">
+                <img src="https://via.placeholder.com/600x300.png?text=SPKC+Magic+School" alt="SPKC Magic School" class="story-image">
+            </div>
+            
+            <p>Once upon a time, there was a happy school where teachers and students lived joyful lives. Until one day, they discovered four magical letters - SPKC! These letters brought endless joy and miracles.</p>
+            
+            <div class="letters">
+                <div class="letter happy">S</div>
+                <div class="letter happy">P</div>
+                <div class="letter happy">K</div>
+                <div class="letter happy">C</div>
+            </div>
+            
+            <h2>Four Magical Spirits</h2>
+            <div class="spirits">
+                <div class="spirit">
+                    <div class="spirit-icon">✨</div>
+                    <h3>S - Spirit "Search"</h3>
+                    <p>With starlight wings, it ignites children's curiosity. Math problems are no longer boring numbers but passwords to mysterious castles; historical events become time corridors you can experience firsthand.</p>
+                </div>
+                <div class="spirit">
+                    <div class="spirit-icon">🔧</div>
+                    <h3>P - Spirit "Practice"</h3>
+                    <p>Dressed in craftsman clothes, it transforms book knowledge into touchable reality. Chemical equations bloom into fireworks before your eyes; physics laws let children build their own miniature roller coasters.</p>
+                </div>
+                <div class="spirit">
+                    <div class="spirit-icon">💖</div>
+                    <h3>K - Spirit "Kindness"</h3>
+                    <p>Radiating warm light, it strengthens the spirit of mutual assistance on campus. When a classmate encounters difficulties, encouraging words and hints automatically appear on other students' textbooks.</p>
+                </div>
+                <div class="spirit">
+                    <div class="spirit-icon">🎨</div>
+                    <h3>C - Spirit "Create"</h3>
+                    <p>Wearing an artist's beret, it presents learning outcomes in the most vivid forms. After students learn a poem, the poem's imagery appears around them; after biology class, they can use light and shadow to create their own exotic plants and animals.</p>
+                </div>
+            </div>
+            
+            <p>The SPKC letters and their spirits brought knowledge, joy, and miracles to the school, and everyone was proud to have these letters.</p>
+            <button class="btn" onclick="showScreen('story2')">Continue Story</button>
+        </div>
+        
+        <!-- Second Story -->
+        <div id="story2" class="screen">
+            <h1>Dark Clouds and the Letter Curse</h1>
+            <div class="animation-container">
+                <div class="grass"></div>
+                <div class="dark-clouds"></div>
+                <div class="school-building">
+                    <div class="clock-tower">
+                        <div class="clock-tower-roof"></div>
+                        <div class="clock">
+                            <div class="clock-hands">
+                                <div class="clock-hour-hand"></div>
+                                <div class="clock-minute-hand"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="school-windows">
+                        <div class="window"></div>
+                        <div class="window"></div>
+                        <div class="window"></div>
+                        <div class="window"></div>
+                    </div>
+                    <div class="school-door"></div>
+                </div>
+                
+                <!-- Trees -->
+                <div class="trees">
+                    <div class="tree">
+                        <div class="tree-leaves"></div>
+                        <div class="tree-trunk"></div>
+                    </div>
+                </div>
+                
+                <!-- Swing -->
+                <div class="swing">
+                    <div class="swing-frame">
+                        <div class="swing-pole swing-pole-left"></div>
+                        <div class="swing-pole swing-pole-right"></div>
+                        <div class="swing-bar"></div>
+                        <div class="swing-ropes">
+                            <div class="swing-rope swing-rope-left"></div>
+                            <div class="swing-rope swing-rope-right"></div>
+                        </div>
+                        <div class="swing-seat"></div>
+                    </div>
+                </div>
+                
+                <div class="magic-letters-animation" style="color:#8B0000; text-shadow:0 0 20px rgba(139,0,0,0.8);">SPKC</div>
+            </div>
+            <p>But suddenly, dark clouds enveloped the school! The evil Word Demons stole the power of the letters, turning blessings into curses.</p>
+            
+            <div class="letters">
+                <div class="letter cursed">S</div>
+                <div class="letter cursed">P</div>
+                <div class="letter cursed">K</div>
+                <div class="letter cursed">C</div>
+            </div>
+            
+            <p>The school fell into darkness, laughter disappeared, replaced by confusion and fear. The four spirits lost their power, and the school's magic vanished.</p>
+            
+            <h2>Teacher Hero Team</h2>
+            <div class="teachers">
+                <div class="teacher">
+                    <div class="teacher-icon">👨‍🏫</div>
+                    <div>Language Teacher</div>
+                    <div>Word Magic</div>
+                </div>
+                <div class="teacher">
+                    <div class="teacher-icon">👩‍🏫</div>
+                    <div>English Teacher</div>
+                    <div>Vocabulary Waves</div>
+                </div>
+                <div class="teacher">
+                    <div class="teacher-icon">🧑‍🏫</div>
+                    <div>Math Teacher</div>
+                    <div>Formula Defense</div>
+                </div>
+            </div>
+            
+            <p>At this moment, the school's teachers stepped forward, forming a hero team determined to fight the Word Demons and save the school and the four spirits!</p>
+            <button class="btn" onclick="showScreen('story3')">Fight the Demons</button>
+        </div>
+        
+        <!-- Third Story -->
+        <div id="story3" class="screen">
+            <h1>Fighting the Word Demons</h1>
+            <div class="video-container">
+                <div class="video-placeholder">
+                    Third Video: Teachers Fighting Word Demons
+                </div>
+            </div>
+            <p>The teachers bravely fought against the evil Word Demons, who were trying to forever seal the power of the SPKC letters and spirits.</p>
+            
+            <div class="demons">
+                <div class="demon">
+                    <div class="demon-icon">😈</div>
+                    <div>Spelling Demon</div>
+                    <div>Weakness: Correct Spelling</div>
+                </div>
+                <div class="demon">
+                    <div class="demon-icon">👻</div>
+                    <div>Grammar Ghost</div>
+                    <div>Weakness: Correct Grammar</div>
+                </div>
+                <div class="demon">
+                    <div class="demon-icon">👹</div>
+                    <div>Punctuation Monster</div>
+                    <div>Weakness: Correct Punctuation</div>
+                </div>
+            </div>
+            
+            <p>Now we need your help! Join the teachers to fight the Word Demons, purify the cursed letters, and restore the spirits' power!</p>
+            <button class="btn" onclick="showScreen('game')">Start Purification Mission</button>
+        </div>
+        
+        <!-- Game Page -->
+        <div id="game" class="screen">
+            <h1>Letter Purification Mission</h1>
+            <div class="video-container">
+                <div class="video-placeholder">
+                    AI Character Explains Gameplay
+                </div>
+            </div>
+            <p>Help the teachers purify the cursed SPKC letters! Each letter needs 4 correct words to fight the Word Demons and restore the spirits' power.</p>
+            
+            <div class="game-container">
+                <div class="letters">
+                    <div class="letter cursed" id="letterS">
+                        S
+                        <div class="letter-progress" id="progressS">0/4</div>
+                    </div>
+                    <div class="letter cursed" id="letterP">
+                        P
+                        <div class="letter-progress" id="progressP">0/4</div>
+                    </div>
+                    <div class="letter cursed" id="letterK">
+                        K
+                        <div class="letter-progress" id="progressK">0/4</div>
+                    </div>
+                    <div class="letter cursed" id="letterC">
+                        C
+                        <div class="letter-progress" id="progressC">0/4</div>
+                    </div>
+                </div>
+                
+                <div class="progress-bar">
+                    <div class="progress" id="progress"></div>
+                </div>
+                
+                <div>
+                    <h3 id="currentLetterPrompt">Enter a word starting with 'S':</h3>
+                    <input type="text" class="word-input" id="wordInput" placeholder="Enter English word...">
+                    <button class="btn" onclick="checkWord()">Purify Letter</button>
+                </div>
+                
+                <div class="result" id="result"></div>
+                
+                <div class="hint-box">
+                    <h3>Word Hint:</h3>
+                    <p>Try this word starting with <span id="currentLetter">S</span>:</p>
+                    <div class="hint-word" id="hintWord" onclick="useHint()">Sun</div>
+                    <p class="word-counter" id="wordCounter">Current letter progress: 0/4 words</p>
+                </div>
+            </div>
+            
+            <button class="btn" onclick="showScreen('ending')" id="nextBtn" style="display:none;">Complete Purification</button>
+        </div>
+        
+        <!-- Ending Page -->
+        <div id="ending" class="screen">
+            <h1>SPKC Glory Restored</h1>
+            
+            <!-- Fireworks Canvas Container -->
+            <div class="canvas-container">
+                <canvas id="fireworks" class="fireworks-canvas"></canvas>
+            </div>
+            
+            <div class="animation-container">
+                <div class="grass"></div>
+                <div class="sun"></div>
+                <div class="cloud cloud1"></div>
+                <div class="cloud cloud2"></div>
+                <div class="cloud cloud3"></div>
+                
+                <!-- School Building -->
+                <div class="school-building">
+                    <div class="clock-tower">
+                        <div class="clock-tower-roof"></div>
+                        <div class="clock">
+                            <div class="clock-hands">
+                                <div class="clock-hour-hand"></div>
+                                <div class="clock-minute-hand"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="school-windows">
+                        <div class="window"></div>
+                        <div class="window"></div>
+                        <div class="window"></div>
+                        <div class="window"></div>
+                    </div>
+                    <div class="school-door"></div>
+                </div>
+                
+                <!-- Trees -->
+                <div class="trees">
+                    <div class="tree">
+                        <div class="tree-leaves"></div>
+                        <div class="tree-trunk"></div>
+                    </div>
+                </div>
+                
+                <!-- Swing -->
+                <div class="swing">
+                    <div class="swing-frame">
+                        <div class="swing-pole swing-pole-left"></div>
+                        <div class="swing-pole swing-pole-right"></div>
+                        <div class="swing-bar"></div>
+                        <div class="swing-ropes">
+                            <div class="swing-rope swing-rope-left"></div>
+                            <div class="swing-rope swing-rope-right"></div>
+                        </div>
+                        <div class="swing-seat"></div>
+                    </div>
+                </div>
+                
+                <div class="happy-people">
+                    <div class="person"></div>
+                    <div class="person"></div>
+                    <div class="person"></div>
+                    <div class="person"></div>
+                </div>
+                <div class="magic-letters-animation">SPKC</div>
+            </div>
+            
+            <div class="success-symbol">✨</div>
+            
+            <p>Congratulations! You successfully helped the teachers defeat the Word Demons and purified the SPKC letters!</p>
+            
+            <div class="letters">
+                <div class="letter purified">S</div>
+                <div class="letter purified">P</div>
+                <div class="letter purified">K</div>
+                <div class="letter purified">C</div>
+            </div>
+            
+            <h2>The Spirits Regained Their Power!</h2>
+            <div class="spirits">
+                <div class="spirit">
+                    <div class="spirit-icon">✨</div>
+                    <h3>S - Spirit "Search"</h3>
+                    <p>Starlight wings shine again! Children's curiosity is reignited, and learning is once again full of exploration fun.</p>
+                </div>
+                <div class="spirit">
+                    <div class="spirit-icon">🔧</div>
+                    <h3>P - Spirit "Practice"</h3>
+                    <p>Craftsman clothes are renewed! Book knowledge once again becomes touchable reality, making learning more interesting.</p>
+                </div>
+                <div class="spirit">
+                    <div class="spirit-icon">💖</div>
+                    <h3>K - Spirit "Kindness"</h3>
+                    <p>Warm light illuminates the campus again! The spirit of mutual assistance among classmates grows stronger, and the learning atmosphere becomes more heartwarming.</p>
+                </div>
+                <div class="spirit">
+                    <div class="spirit-icon">🎨</div>
+                    <h3>C - Spirit "Create"</h3>
+                    <p>The artist's beret shines brightly again! Learning outcomes are presented in the most vivid forms, and creativity blooms once more.</p>
+                </div>
+            </div>
+            
+            <p>The school regained its former glory, and laughter once again filled the campus. The SPKC letters and spirits shine with magical power again!</p>
+            
+            <h2>Thank You for Your Help!</h2>
+            <p>The school's teachers and students will never forget your contribution.</p>
+            
+            <button class="firework-button" id="launchFireworks">Launch More Fireworks!</button>
+            <p class="instructions">Click anywhere on the screen to create more fireworks!</p>
+            
+            <div class="theme-text">
+                SPKC Glory Restored · Spirits Return · Magic Reappears
+            </div>
+            
+            <button class="btn" onclick="showScreen('home')" style="position: relative; z-index: 20;">Restart Adventure</button>
+        </div>
+    </div>
+
+    <script>
+        // Word database
+        const wordDatabase = {
+            'S': [
+                "Sun", "Star", "Sky", "Sea", "Sand", "School", "Student", "Study", "Science", "Song",
+                "Sweet", "Strong", "Smart", "Smile", "Sleep", "Spring", "Summer", "Snow", "Silver", "Stone",
+                "Space", "Spirit", "Story", "Sport", "Speak", "Special", "Success", "System", "Safety", "Secret",
+                "Shape", "Share", "Shine", "Ship", "Shop", "Show", "Silent", "Simple", "Skill", "Slow",
+                "Small", "Social", "Soft", "Solid", "Solve", "Sound", "South", "Speed", "Start", "State"
+            ],
+            'P': [
+                "Peace", "Power", "People", "Place", "Plant", "Play", "Pretty", "Proud", "Pure", "Party",
+                "Paper", "Pencil", "Picture", "Pizza", "Planet", "Plant", "Poem", "Police", "Politic", "Popular",
+                "Positive", "Possible", "Practice", "Prepare", "Present", "Pretty", "Price", "Pride", "Prince", "Princess",
+                "Problem", "Process", "Produce", "Product", "Program", "Project", "Protect", "Prove", "Provide", "Public",
+                "Pull", "Pupil", "Purple", "Purpose", "Push", "Puzzle", "Park", "Path", "Pattern", "People"
+            ],
+            'K': [
+                "King", "Kind", "Keep", "Key", "Kiss", "Kitchen", "Kite", "Kitten", "Know", "Knowledge",
+                "Kangaroo", "Karate", "Keen", "Keep", "Kettle", "Keyboard", "Kidney", "Kilogram", "Kindle", "Kingdom",
+                "Kiosk", "Kit", "Knight", "Knot", "Knowledge", "Koala", "Krypton", "Kale", "Karaoke", "Karma",
+                "Kayak", "Kebab", "Keel", "Keeper", "Kelp", "Kennel", "Kernel", "Kestrel", "Ketchup", "Keyhole",
+                "Keystone", "Kick", "Kidnap", "Kiln", "Kilt", "Kinetic", "Kiosk", "Kipper", "Kismet", "Kitten"
+            ],
+            'C': [
+                "Cat", "Car", "City", "Cloud", "Color", "Circle", "Class", "Clean", "Clear", "Close",
+                "Coffee", "Cold", "College", "Come", "Comfort", "Common", "Company", "Complete", "Computer", "Concept",
+                "Condition", "Connect", "Consider", "Contact", "Continue", "Control", "Cook", "Cool", "Copy", "Correct",
+                "Cost", "Count", "Country", "Couple", "Course", "Cover", "Create", "Credit", "Cross", "Crowd",
+                "Cry", "Culture", "Cup", "Curious", "Current", "Custom", "Cut", "Cycle", "Cake", "Call"
+            ]
+        };
+        
+        let currentScreen = 'home';
+        let purifiedLetters = 0;
+        let currentLetterIndex = 0;
+        const letterOrder = ['S', 'P', 'K', 'C'];
+        let letterProgress = {
+            'S': { count: 0, usedWords: [] },
+            'P': { count: 0, usedWords: [] },
+            'K': { count: 0, usedWords: [] },
+            'C': { count: 0, usedWords: [] }
+        };
+        
+        function showScreen(screenId) {
+            document.getElementById(currentScreen).classList.remove('active');
+            document.getElementById(screenId).classList.add('active');
+            currentScreen = screenId;
+            
+            // Reset game state
+            if(screenId === 'game') {
+                resetGame();
+            }
+            
+            // If it's the ending page, start fireworks
+            if(screenId === 'ending') {
+                setTimeout(() => {
+                    startFireworks();
+                }, 1000);
+            }
+        }
+        
+        function resetGame() {
+            purifiedLetters = 0;
+            currentLetterIndex = 0;
+            letterProgress = {
+                'S': { count: 0, usedWords: [] },
+                'P': { count: 0, usedWords: [] },
+                'K': { count: 0, usedWords: [] },
+                'C': { count: 0, usedWords: [] }
+            };
+            
+            document.getElementById('progress').style.width = '0%';
+            document.getElementById('wordInput').value = '';
+            document.getElementById('result').innerHTML = '';
+            document.getElementById('nextBtn').style.display = 'none';
+            
+            // Reset letter states and progress display
+            const letters = document.querySelectorAll('#game .letter');
+            letters.forEach(letter => {
+                letter.className = 'letter cursed';
+            });
+            
+            document.getElementById('progressS').textContent = '0/4';
+            document.getElementById('progressP').textContent = '0/4';
+            document.getElementById('progressK').textContent = '0/4';
+            document.getElementById('progressC').textContent = '0/4';
+            
+            // Update hint
+            updateWordHint();
+        }
+        
+        function updateWordHint() {
+            const currentLetter = letterOrder[currentLetterIndex];
+            document.getElementById('currentLetter').textContent = currentLetter;
+            document.getElementById('currentLetterPrompt').textContent = `Enter a word starting with '${currentLetter}':`;
+            document.getElementById('wordCounter').textContent = `Current letter progress: ${letterProgress[currentLetter].count}/4 words`;
+            
+            // Update word hint - only show one word
+            const availableWords = wordDatabase[currentLetter].filter(word => 
+                !letterProgress[currentLetter].usedWords.includes(word.toLowerCase())
+            );
+            
+            if (availableWords.length > 0) {
+                const randomIndex = Math.floor(Math.random() * availableWords.length);
+                document.getElementById('hintWord').textContent = availableWords[randomIndex];
+            } else {
+                document.getElementById('hintWord').textContent = "No more hints available";
+            }
+        }
+        
+        function useHint() {
+            const hintWord = document.getElementById('hintWord').textContent;
+            if (hintWord !== "No more hints available") {
+                document.getElementById('wordInput').value = hintWord;
+            }
+        }
+        
+        function checkWord() {
+            const input = document.getElementById('wordInput');
+            const word = input.value.trim();
+            const result = document.getElementById('result');
+            const currentLetter = letterOrder[currentLetterIndex];
+            
+            if(word === '') {
+                result.innerHTML = 'Please enter a word!';
+                result.style.color = '#FFD700';
+                return;
+            }
+            
+            // Check if the word starts with the correct letter
+            if(word.toLowerCase().startsWith(currentLetter.toLowerCase())) {
+                // Check if the word has already been used
+                if(letterProgress[currentLetter].usedWords.includes(word.toLowerCase())) {
+                    result.innerHTML = `Word "${word}" has already been used, please try another word!`;
+                    result.style.color = '#FFD700';
+                    return;
+                }
+                
+                // Record the used word
+                letterProgress[currentLetter].usedWords.push(word.toLowerCase());
+                letterProgress[currentLetter].count++;
+                
+                // Update letter progress display
+                document.getElementById(`progress${currentLetter}`).textContent = 
+                    `${letterProgress[currentLetter].count}/4`;
+                
+                result.innerHTML = `Success! Word "${word}" purified letter ${currentLetter}! (${letterProgress[currentLetter].count}/4)`;
+                result.style.color = '#87CEEB';
+                
+                // If current letter has collected 4 words
+                if(letterProgress[currentLetter].count >= 4) {
+                    // Purify current letter
+                    document.getElementById(`letter${currentLetter}`).className = 'letter purified';
+                    purifiedLetters++;
+                    
+                    // Move to next letter
+                    currentLetterIndex++;
+                    
+                    // If all letters are purified
+                    if(purifiedLetters === 4) {
+                        result.innerHTML = 'Congratulations! All letters have been purified! SPKC glory has been restored!';
+                        document.getElementById('nextBtn').style.display = 'inline-block';
+                    } else {
+                        result.innerHTML += `<br>Letter ${currentLetter} has been fully purified! Now purify letter ${letterOrder[currentLetterIndex]}.`;
+                    }
+                }
+                
+                // Update total progress bar (16 words total)
+                const totalWords = Object.values(letterProgress).reduce((sum, letter) => sum + letter.count, 0);
+                const progress = (totalWords / 16) * 100;
+                document.getElementById('progress').style.width = `${progress}%`;
+                
+                input.value = '';
+                
+                // Update hint
+                updateWordHint();
+            } else {
+                result.innerHTML = `Word "${word}" cannot purify letter ${currentLetter}, please try a word starting with ${currentLetter}!`;
+                result.style.color = '#FF416C';
+            }
+        }
+        
+        // Fireworks effect code
+        const canvas = document.getElementById('fireworks');
+        const ctx = canvas.getContext('2d');
+        
+        // Set canvas dimensions
+        function resizeCanvas() {
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = window.innerWidth * dpr;
+            canvas.height = window.innerHeight * dpr;
+            ctx.scale(dpr, dpr);
+            canvas.style.width = `${window.innerWidth}px`;
+            canvas.style.height = `${window.innerHeight}px`;
+        }
+        
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        
+        // Detect if it's a mobile device
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        
+        // Fireworks particle class
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.radius = Math.random() * 2 + 1;
+                this.speed = Math.random() * 3 + 2;
+                this.angle = Math.random() * Math.PI * 2; // Random direction
+                this.vx = Math.cos(this.angle) * this.speed;
+                this.vy = Math.sin(this.angle) * this.speed;
+                this.alpha = 1;
+                this.decay = Math.random() * 0.015 + 0.01;
+            }
+            
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vy += 0.05; // Gravity effect
+                this.alpha -= this.decay;
+                
+                return this.alpha > 0;
+            }
+            
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+        
+        // Fireworks class
+        class Firework {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.particles = [];
+                this.colors = [
+                    '#ff0000', '#00ff00', '#0000ff', 
+                    '#ffff00', '#ff00ff', '#00ffff',
+                    '#ff8a00', '#e52e71', '#8a2be2'
+                ];
+                
+                this.createParticles();
+            }
+            
+            createParticles() {
+                const particleCount = isMobile ? 100 : 150; // Reduce particle count on mobile devices
+                const color = this.colors[Math.floor(Math.random() * this.colors.length)];
+                
+                for (let i = 0; i < particleCount; i++) {
+                    this.particles.push(new Particle(this.x, this.y, color));
+                }
+            }
+            
+            update() {
+                this.particles = this.particles.filter(particle => particle.update());
+                return this.particles.length > 0;
+            }
+            
+            draw() {
+                this.particles.forEach(particle => particle.draw());
+            }
+        }
+        
+        // Success symbol class (star)
+        class SuccessSymbol {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = 5;
+                this.maxSize = isMobile ? 40 : 50; // Adjust size on mobile devices
+                this.growthRate = 2;
+                this.alpha = 1;
+                this.fadeRate = 0.02;
+            }
+            
+            update() {
+                this.size += this.growthRate;
+                this.alpha -= this.fadeRate;
+                return this.alpha > 0 && this.size < this.maxSize * 1.5;
+            }
+            
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.strokeStyle = '#ffd700';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                
+                // Draw five-pointed star
+                for (let i = 0; i < 5; i++) {
+                    const angle = (i * 2 * Math.PI / 5) - Math.PI / 2;
+                    const x1 = this.x + this.size * Math.cos(angle);
+                    const y1 = this.y + this.size * Math.sin(angle);
+                    
+                    const innerAngle = angle + Math.PI / 5;
+                    const x2 = this.x + (this.size / 2) * Math.cos(innerAngle);
+                    const y2 = this.y + (this.size / 2) * Math.sin(innerAngle);
+                    
+                    if (i === 0) {
+                        ctx.moveTo(x1, y1);
+                    } else {
+                        ctx.lineTo(x1, y1);
+                    }
+                    
+                    ctx.lineTo(x2, y2);
+                }
+                
+                ctx.closePath();
+                ctx.stroke();
+                ctx.restore();
+            }
+        }
+        
+        const fireworks = [];
+        const successSymbols = [];
+        
+        // Create fireworks
+        function createFirework(x, y) {
+            fireworks.push(new Firework(x, y));
+            successSymbols.push(new SuccessSymbol(x, y));
+        }
+        
+        // Animation loop
+        function animate() {
+            // Semi-transparent black background, creating a trailing effect
+            ctx.fillStyle = 'rgba(10, 10, 30, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Update and draw fireworks
+            for (let i = fireworks.length - 1; i >= 0; i--) {
+                if (!fireworks[i].update()) {
+                    fireworks.splice(i, 1);
+                } else {
+                    fireworks[i].draw();
+                }
+            }
+            
+            // Update and draw success symbols
+            for (let i = successSymbols.length - 1; i >= 0; i--) {
+                if (!successSymbols[i].update()) {
+                    successSymbols.splice(i, 1);
+                } else {
+                    successSymbols[i].draw();
+                }
+            }
+            
+            requestAnimationFrame(animate);
+        }
+        
+        // Start animation
+        function startFireworks() {
+            // Clear canvas
+            ctx.fillStyle = 'rgba(10, 10, 30, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Start animation loop
+            animate();
+            
+            // Automatically create some fireworks
+            for (let i = 0; i < (isMobile ? 3 : 5); i++) {
+                setTimeout(() => {
+                    const x = Math.random() * window.innerWidth;
+                    const y = Math.random() * window.innerHeight * 0.6;
+                    createFirework(x, y);
+                }, i * 200);
+            }
+            
+            // Automatically create fireworks
+            setInterval(() => {
+                if (Math.random() > 0.7) {
+                    const x = Math.random() * window.innerWidth;
+                    const y = Math.random() * window.innerHeight * 0.6;
+                    createFirework(x, y);
+                }
+            }, 1000);
+        }
+        
+        // Create fireworks when button is clicked
+        document.getElementById('launchFireworks').addEventListener('click', function() {
+            for (let i = 0; i < (isMobile ? 3 : 5); i++) {
+                setTimeout(() => {
+                    const x = Math.random() * window.innerWidth;
+                    const y = Math.random() * window.innerHeight * 0.6;
+                    createFirework(x, y);
+                }, i * 200);
+            }
+        });
+        
+        // Touch event handling
+        function handleTouch(e) {
+            e.preventDefault();
+            const touches = e.changedTouches;
+            
+            for (let i = 0; i < touches.length; i++) {
+                const touch = touches[i];
+                createFirework(touch.clientX, touch.clientY);
+            }
+        }
+        
+        // Click anywhere on the page to create fireworks
+        canvas.addEventListener('click', function(e) {
+            if (!isMobile) { // Non-mobile devices use click event
+                createFirework(e.clientX, e.clientY);
+            }
+        });
+        
+        // Mobile devices use touch events
+        if (isMobile) {
+            canvas.addEventListener('touchstart', handleTouch, {passive: false});
+            canvas.addEventListener('touchmove', handleTouch, {passive: false});
+        }
+        
+        // Prevent double-tap zoom
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function (event) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+        
+        // Add keyboard event listener
+        document.getElementById('wordInput').addEventListener('keypress', function(e) {
+            if(e.key === 'Enter') {
+                checkWord();
+            }
+        });
+    </script>
+</body>
+</html>
